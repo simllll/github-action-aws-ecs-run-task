@@ -9,7 +9,7 @@ const {NODE_REGION_CONFIG_FILE_OPTIONS, NODE_REGION_CONFIG_OPTIONS} = require("@
 
 let logOutput = '';
 
-// DEBUG VERSION
+// DEBUG VERSION !
 
 const main = async () => {
     try {
