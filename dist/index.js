@@ -56473,6 +56473,8 @@ const {NODE_REGION_CONFIG_FILE_OPTIONS, NODE_REGION_CONFIG_OPTIONS} = __nccwpck_
 
 let logOutput = '';
 
+// DEBUG VERSION !
+
 const main = async () => {
     try {
         // Setup AWS clients
@@ -56630,13 +56632,14 @@ const main = async () => {
         }
 
         try {
-            core.debug(`Waiting for task to be in running state. Waiting for ${taskStartMaxWaitTime} seconds.`);
-            await waitUntilTasksRunning({
+            core.debug(`Waiting for task to be in running state. Waiting for ${taskStartMaxWaitTime} seconds. (taskCheckStateDelay = ${taskCheckStateDelay}, taskArn=${taskArn})`);
+            const waitECSTaskResult = await waitUntilTasksRunning({
                 client: ecs,
                 maxWaitTime: taskStartMaxWaitTime,
                 maxDelay: taskCheckStateDelay,
                 minDelay: taskCheckStateDelay,
             }, {cluster, tasks: [taskArn]});
+            core.debug(`waitECSTaskResult: ${waitECSTaskResult.state} / ${JSON.stringify(waitECSTaskResult)}`);
         } catch (error) {
             core.setFailed(`Task did not start successfully. Error: ${error.message}.`);
             process.exit(1);
