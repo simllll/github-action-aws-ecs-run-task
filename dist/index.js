@@ -56621,6 +56621,7 @@ const main = async () => {
                             }));
 
                             await handleCWResponseAsync(response);
+                            core.debug(`LogGroupARN finished.`);
                         } catch (err) {
                             core.error(err.message);
                         }
@@ -56641,8 +56642,11 @@ const main = async () => {
             }, {cluster, tasks: [taskArn]});
             core.debug(`waitECSTaskResult: ${waitECSTaskResult.state} / ${JSON.stringify(waitECSTaskResult)}`);
         } catch (error) {
-            core.setFailed(`Task did not start successfully. Error: ${error.message}.`);
-            process.exit(1);
+            // if taskWaitUntilStopped is true, the exit code is validated, and therefore we can skip this step
+            if (!taskWaitUntilStopped) {
+                core.setFailed(`Task did not start successfully. Error: ${error.message}.`);
+                process.exit(1);
+            }
         }
 
         // If taskWaitUntilStopped is false, we can bail out here because we can not tail logs or have any
